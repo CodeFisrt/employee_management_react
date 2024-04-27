@@ -1,0 +1,64 @@
+.containers {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: orange;
+  color: white;
+  height: 45px;
+}
+
+.sidebar {
+  background-color: black;
+  width: 100px;
+  color: white;
+  padding: 20px;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    margin-left: -15px;
+  }
+
+  li {
+    font-size: 13px;
+    color: white;
+  }
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.bi {
+  vertical-align: -.125em;
+  pointer-events: none;
+  fill: currentColor;
+}
+
+.nav-flush .nav-link {
+  border-radius: 0;
+}
+
+.linkName {
+  color: white;
+  text-decoration: none;
+  font-size: 13px !important
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
