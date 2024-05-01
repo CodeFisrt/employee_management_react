@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef ,useMemo , useCallback} from "react";
+import React, { useState, useEffect , useRef} from 'react';
+import { AgGridReact } from 'ag-grid-react';
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import { getAllClients, saveClient, onDelete } from "../api/clients";
@@ -7,8 +8,6 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Button } from 'primereact/button';
-import { Paginator } from 'primereact/paginator';
-import { AgGridReact } from 'ag-grid-react';
 const Clients = () => {
   const [clientList, setClientList] = useState([]);
   const [isAddClient, setIsAddClients] = useState(false);
@@ -29,20 +28,11 @@ const Clients = () => {
   const toast = useRef(null);
   const [clientId,setClientId] = useState(null);
   const [isLoading, setisLoading] = useState(false);
-  const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
-  const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
-  const [rowData, setRowData] = useState();
-  const [columnDefs, setColumnDefs] = useState([
-    { field: "age" },
-    { field: "country" },
-    { field: "year" },
-    { field: "date" },
-    { field: "sport" },
-    { field: "gold" },
-    { field: "silver" },
-    { field: "bronze" },
-    { field: "total" },
-  ]);
+  const [rowData, setRowData] = useState([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [paginationPageSize] = useState(5); // Set the number of rows per page
+  const [paginationPage, setPaginationPage] = useState(0); // Current page number
+  const [loading, setLoading] = useState(true);
 
   const accept = () => {
     onDelete(clientId).then((res) => {
@@ -53,24 +43,25 @@ const Clients = () => {
     })
   }
 
+  // useEffect(() => {
+  //    getListOfCLients();
+  // }, []);
+
   useEffect(() => {
-    // getListOfCLients();
-  }, []);
+    fetchData();
+  }, [paginationPage]); // Fetch data when pagination page changes
+
 
   function getListOfCLients() {
     setisLoading(true);
     getAllClients().then((data) => {
       if (data.result) {
         setClientList(data.data);
+        console.log('clientList',clientList)
         setisLoading(false);
       }
     });
   }
-
-  const onGridReady = useCallback((params) => {
-    getAllClients().then((data) =>
-      setClientList(data.data) );
-  }, []);
 
   const onAddClinet = () => {
     setIsSaved(false);
@@ -95,6 +86,45 @@ const Clients = () => {
     setVisible(true);
   }
 
+  function getListOfCLients() {
+    setisLoading(true);
+    getAllClients().then((data) => {
+      if (data.result) {
+        setClientList(data.data);
+        console.log('clientList',clientList)
+        setisLoading(false);
+      }
+    });
+  }
+  const fetchData = async () => {
+   // try {
+      setLoading(true);
+    await  getAllClients().then((data) => {
+        if (data.result) {
+          setRowData(data.data);
+          console.log('clientList',data.data)
+          setisLoading(false);
+        }
+      });
+    //  console.log(response)
+     // const data = await response.json();
+     // console.log(data)
+     // setRowData(data.rows);
+     // setTotalRows(data.total); // Total rows from the API response
+   // } catch (error) {
+  //    console.error('Error fetching data:', error);
+  //  } 
+  };
+
+  const onPageChanged = (newPage) => {
+    setPaginationPage(newPage);
+  };
+
+  const columnDefs = [
+    { headerName: 'Make', field: 'make' },
+    { headerName: 'Model', field: 'model' },
+    { headerName: 'Price', field: 'price' }
+  ];
   return (
     <div>
       <Card>
@@ -124,7 +154,6 @@ const Clients = () => {
           <Card.Body>
             <div className="row">
               <div className="col-md-12">
-
                 {/* <Table striped bordered hover size="sm">
                   <thead>
                     <tr>
@@ -153,19 +182,20 @@ const Clients = () => {
                     }
                   </tbody>
                 </Table> */}
+                ll
                 <AgGridReact
-                  rowData={clientList}
-                  columnDefs={columnDefs}
-                  // autoGroupColumnDef={autoGroupColumnDef}
-                  // defaultColDef={defaultColDef}
-                  suppressRowClickSelection={true}
-                  groupSelectsChildren={true}
-                  rowSelection={"multiple"}
-                  rowGroupPanelShow={"always"}
-                  pivotPanelShow={"always"}
-                  pagination={true}
-                  onGridReady={onGridReady}
-                />
+        columnDefs={columnDefs}
+        rowData={rowData}
+        pagination={true}
+      //  paginationPageSize={paginationPageSize}
+      //  suppressPaginationPanel={true}
+      //  suppressCellSelection={true}
+      //  suppressScrollOnNewData={true}
+      //  onPaginationChanged={() => onPageChanged(paginationPage)}
+      //  loadingOverlayComponent={<div>Loading...</div>}
+      //  noRowsOverlayComponent={<div>No rows to display</div>}
+       // enableCellTextSelection={true}
+      />
               </div>
             </div>
           </Card.Body>

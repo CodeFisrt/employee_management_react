@@ -31,7 +31,12 @@ const Payment = () => {
         setisLoading(true);
         getAllPayments().then((data) => {
             if (data.result) {
-                setPaymentList(data.data);
+                data.data.forEach(user => {
+                    // Update the age property directly
+                    user.paymentDate = new Date( user.paymentDate).toLocaleDateString();
+                  });
+                  // Update state by creating a new array reference
+                  setPaymentList([...data.data]);
                 setisLoading(false);
             }
         });
@@ -79,7 +84,7 @@ const Payment = () => {
                 <Card.Body>
                     <div className='row'>
                         <div className={`${isAddPayment ? 'col-md-8' : 'col-12'}`}>
-                            <DataTable value={paymentList} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
+                            <DataTable value={paymentList} tableStyle={{ minWidth: '50rem' }}>
                                 <Column field="paymentMode" header="Payment By" style={{ width: '25%' }}></Column>
                                 <Column field="paymentDate" header="Date" style={{ width: '25%' }}></Column>
                                 <Column field="amount" header="Amount" style={{ width: '25%' }}></Column>
