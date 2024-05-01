@@ -9,6 +9,8 @@ import { Dialog } from 'primereact/dialog';
 import { getAllClients } from "../api/clients";
 import { getAllEmployee } from '../api/employee';
 
+import { useSelector } from 'react-redux';
+
 const Project = () => {
     const [ProjectObj, setProjectObj] = useState({
         'clientProjectId': 0,
@@ -29,21 +31,23 @@ const Project = () => {
     const [isLoading, setisLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [clientList, setClientList] = useState([]);
-    const [EmployeeList, setEmpList] = useState([]);
+    // const [EmployeeList, setEmpList] = useState([]);
+
+    const reducerData = useSelector(state=>state);
 
     useEffect(() => {
         getprojects();
         getListOfClients();
-        getEmployee();
+        // getEmployee();
     }, []);
 
-    const getEmployee = () => {
-        getAllEmployee().then((data) => {
-            if (data.result) {
-                setEmpList(data.data);
-            }
-        })
-    }
+    // const getEmployee = () => {
+    //     getAllEmployee().then((data) => {
+    //         if (data.result) {
+    //             setEmpList(data.data);
+    //         }
+    //     })
+    // }
 
     const getListOfClients = () => {
         setisLoading(true);
@@ -76,6 +80,7 @@ const Project = () => {
     }
     return (
         <div>
+            {/* <h5>{JSON.stringify(reducerData.reducer.employeeData) }</h5> */}
             <Card>
                 <Card.Header>
                     <div className="row">
@@ -129,7 +134,7 @@ const Project = () => {
                         <label>Lead By</label>
                         <select onChange={(event) => onChangeText(event, 'leadByEmpId')} className='form-select'>
                             {
-                                EmployeeList.map(data => {
+                                reducerData.reducer.employeeData.map(data => {
                                     return <option value={data.empId}>{data.empName}</option>
                                 })
                             }

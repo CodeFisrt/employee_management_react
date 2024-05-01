@@ -2,15 +2,21 @@
 import React, { useEffect, useState } from 'react';
 import { getAllEmployee } from '../api/employee';
 import Table from 'react-bootstrap/Table';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getEmplyeeList } from '../Redux/react-redux/action';
 const EmployeeList = () => {
     const [empList, setEmpList] = useState([]);
 
+    const dispatch = useDispatch();
+    
     useEffect(() => {
         try {
             getAllEmployee().then((data) => {
                 if (data.result) {
                     setEmpList(data.data);
+                    debugger;
+                    dispatch(getEmplyeeList(data.data))
+
                 }
             })
         } catch (error) {
